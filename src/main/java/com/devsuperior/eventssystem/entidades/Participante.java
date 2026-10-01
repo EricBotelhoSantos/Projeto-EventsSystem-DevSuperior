@@ -3,6 +3,7 @@ package com.devsuperior.eventssystem.entidades;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,8 +18,8 @@ public class Participante {
     @Column(unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "id.participante")
-    private Set<AtividadeParticipante> ativPart = new HashSet<>();
+    @ManyToMany(mappedBy = "participantes")
+    private Set<Atividade> atividades = new HashSet<>();
 
     public Participante() {
     }
@@ -53,7 +54,19 @@ public class Participante {
         this.email = email;
     }
 
-    public Set<AtividadeParticipante> getAtivPart() {
-        return ativPart;
+    public Set<Atividade> getAtividades() {
+        return atividades;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Participante that = (Participante) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

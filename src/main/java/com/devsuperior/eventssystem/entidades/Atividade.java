@@ -2,10 +2,7 @@ package com.devsuperior.eventssystem.entidades;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_atividade")
@@ -23,10 +20,13 @@ public class Atividade {
     private Categoria categoria;
 
     @OneToMany(mappedBy = "atividade")
-    private List<Bloco> blocos = new ArrayList<>();
+    private Set<Bloco> blocos = new HashSet<>();
 
-    @OneToMany(mappedBy = "id.atividade")
-    private Set<AtividadeParticipante> ativPart = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "tb_atividade_participante",
+            joinColumns = @JoinColumn(name = "atividade_id"),
+            inverseJoinColumns = @JoinColumn(name = "participante_id"))
+    private Set<Participante> participantes = new HashSet<>();
 
     public Atividade() {
     }
@@ -78,11 +78,23 @@ public class Atividade {
         this.categoria = categoria;
     }
 
-    public List<Bloco> getBlocos() {
+    public Set<Bloco> getBlocos() {
         return blocos;
     }
 
-    public Set<AtividadeParticipante> getAtivPart() {
-        return ativPart;
+    public Set<Participante> getParticipantes() {
+        return participantes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Atividade atividade = (Atividade) o;
+        return Objects.equals(id, atividade.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
